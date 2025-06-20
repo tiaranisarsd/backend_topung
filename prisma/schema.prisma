@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id              Int               @id @default(autoincrement())
+  nama            String
+  email           String
+  password        String
+  role            String
+  createdAt       DateTime          @default(now())
+  alamat          String?
+  gambar          String?
+  jadwalId        Int?
+  no_rekening     String?
+  no_telp         String?
+  harga           String?
+  bank            String?
+  cv_pdf          String?
+  dokumentasi     dokumentasi[]
+  edukasi         edukasi[]
+  jadwal_kegiatan jadwal_kegiatan[]
+  jadwal_terapis  jadwal_terapis[]
+  pertanyaan      pertanyaan[]
+  reservasi       reservasi[]
+  testimoni       testimoni[]
+  token           token[]
+}
+
+model edukasi {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  konten    String
+  createdAt DateTime @default(now())
+  user      users    @relation(fields: [userId], references: [id])
+}
+
+model token {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  revoked   Boolean  @default(false)
+  user      users    @relation(fields: [userId], references: [id])
+}
+
+model jadwal_kegiatan {
+  id             Int    @id @default(autoincrement())
+  userId         Int
+  tanggal_waktu  String
+  jenis_kegiatan String
+  lokasi         String
+  deskripsi      String
+  user           users  @relation(fields: [userId], references: [id])
+}
+
+model jadwal_terapis {
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  hari      String
+  jam       String
+  user      users       @relation(fields: [userId], references: [id])
+  reservasi reservasi[]
+}
+
+model dokumentasi {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  gambar String
+  judul  String
+  user   users  @relation(fields: [userId], references: [id])
+}
+
+model testimoni {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  media  String
+  user   users  @relation(fields: [userId], references: [id])
+}
+
+model pertanyaan {
+  id               Int    @id @default(autoincrement())
+  userId           Int
+  judul_pertanyaan String
+  isi_pertanyaan   String
+  user             users  @relation(fields: [userId], references: [id])
+}
+
+model tinjauan {
+  id        Int      @id @default(autoincrement())
+  nama      String
+  layanan   String
+  rating    Int
+  tinjauan  String   @default("")
+  createdAt DateTime @default(now())
+}
+
+model reservasi {
+  id               Int             @id @default(autoincrement())
+  layanan          String
+  tanggal_waktu    String
+  nama             String
+  usia             Int
+  no_telp          String
+  alamat           String
+  keluhan          String
+  pembayaran       String
+  bukti_pembayaran String?
+  status           String          @default("pending")
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  userId           Int?
+  jadwalId         Int?
+  jadwal           jadwal_terapis? @relation(fields: [jadwalId], references: [id])
+  users            users?          @relation(fields: [userId], references: [id])
+}
