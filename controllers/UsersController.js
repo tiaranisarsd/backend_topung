@@ -476,7 +476,7 @@ export const deleteUsers = async (req, res) => {
             console.log(`Gambar dengan Public ID "${publicId}" berhasil dihapus dari Cloudinary.`);
           }
         } catch (cloudinaryError) {
-          console.error("Kesalahan umum saat memproses penghapusan gambar dari Cloudinary:", cloudinaryError);
+          console.error("Kesalahan umum saat memDisetujui penghapusan gambar dari Cloudinary:", cloudinaryError);
         }
       }
     }
@@ -508,7 +508,7 @@ export const deleteUsers = async (req, res) => {
             console.log(`CV dengan Public ID "${publicId}" berhasil dihapus dari Cloudinary.`);
           }
         } catch (cloudinaryError) {
-          console.error("Kesalahan umum saat memproses penghapusan CV dari Cloudinary:", cloudinaryError);
+          console.error("Kesalahan umum saat memDisetujui penghapusan CV dari Cloudinary:", cloudinaryError);
         }
       }
     }

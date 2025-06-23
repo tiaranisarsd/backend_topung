@@ -115,7 +115,7 @@ CREATE TABLE "reservasi" (
     "keluhan" TEXT NOT NULL,
     "pembayaran" TEXT NOT NULL,
     "bukti_pembayaran" TEXT,
-    "status" TEXT NOT NULL DEFAULT 'pending',
+    "status" TEXT NOT NULL DEFAULT 'Menunggu',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" INTEGER,

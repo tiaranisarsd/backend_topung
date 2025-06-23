@@ -142,16 +142,16 @@ export const createReservasi = async (req, res) => {
       return res.status(400).json({ msg: "Jadwal yang dipilih tidak ditemukan atau sudah tidak tersedia. Silakan pilih jadwal lain." });
     }
 
-    // Validasi apakah jadwal sudah dipesan dengan status "proses"
+    // Validasi apakah jadwal sudah dipesan dengan status "Disetujui"
     const existingReservasi = await prisma.reservasi.findFirst({
       where: {
         jadwalId: jadwalId,
-        status: "proses", // Hanya cek reservasi dengan status "proses"
+        status: "Disetujui", // Hanya cek reservasi dengan status "Disetujui"
       },
     });
 
     if (existingReservasi) {
-      return res.status(400).json({ msg: "Maaf, jadwal yang Anda pilih sudah dipesan oleh pelanggan lain dan sedang dalam proses. Silakan pilih jadwal lain." });
+      return res.status(400).json({ msg: "Maaf, jadwal yang Anda pilih sudah dipesan oleh pelanggan lain dan sedang dalam Disetujui. Silakan pilih jadwal lain." });
     }
 
     // Jika semua validasi lolos, buat reservasi baru
@@ -202,8 +202,8 @@ export const updateReservasiStatus = async (req, res) => {
     // Log reservasi sebelum update untuk debugging
     console.log("Reservasi sebelum update:", reservasi);
 
-    // Jika status diubah menjadi "proses" dan ada jadwalId, hapus jadwal_terapis
-    if (status === "proses") {
+    // Jika status diubah menjadi "Disetujui" dan ada jadwalId, hapus jadwal_terapis
+    if (status === "Disetujui") {
       if (reservasi.jadwalId) {
         try {
           console.log(`Attempting to delete jadwal with ID: ${reservasi.jadwalId}`);
@@ -216,12 +216,12 @@ export const updateReservasiStatus = async (req, res) => {
         }
       } else {
         console.log("No jadwalId found for this reservasi.");
-        // Set status to "batal" if jadwalId is not found
+        // Set status to "Dibatalkan" if jadwalId is not found
         await prisma.reservasi.update({
           where: { id: id },
-          data: { status: "batal" },
+          data: { status: "Dibatalkan" },
         });
-        return res.status(400).json({ msg: "Tidak dapat mengubah status ke 'proses' karena jadwal tidak tersedia." });
+        return res.status(400).json({ msg: "Tidak dapat mengubah status ke 'Disetujui' karena jadwal tidak tersedia." });
       }
     }
 
@@ -252,7 +252,7 @@ export const getAvailableJadwalTerapis = async (req, res) => {
     const jadwalTerapis = await prisma.jadwal_terapis.findMany({
       include: {
         reservasi: {
-          where: { status: "proses" }, // Hanya ambil reservasi dengan status "proses"
+          where: { status: "Disetujui" }, // Hanya ambil reservasi dengan status "Disetujui"
         },
         user: {
           select: { nama: true, email: true }, // Informasi terapis
@@ -260,7 +260,7 @@ export const getAvailableJadwalTerapis = async (req, res) => {
       },
     });
 
-    // Filter jadwal yang tidak memiliki reservasi dengan status "proses"
+    // Filter jadwal yang tidak memiliki reservasi dengan status "Disetujui"
     const availableJadwal = jadwalTerapis.filter(jadwal => jadwal.reservasi.length === 0);
 
     res.status(200).json(availableJadwal);
@@ -311,7 +311,7 @@ export const updateReservasi = async (req, res) => {
 
     // Validate status if provided
     if (status) {
-      const validStatuses = ['pending', 'proses', 'success']; // Adjust based on your allowed statuses
+      const validStatuses = ['Menunggu', 'Disetujui', 'Selesai']; // Adjust based on your allowed statuses
       if (!validStatuses.includes(status)) {
         return res.status(400).json({
           msg: `Status harus salah satu dari: ${validStatuses.join(', ')}`,
@@ -412,7 +412,7 @@ export const deleteReservasi = async (req, res) => {
             }
         }
       } catch (cloudinaryError) {
-        console.error("Kesalahan umum saat memproses penghapusan gambar dari Cloudinary:", cloudinaryError);
+        console.error("Kesalahan umum saat memDisetujui penghapusan gambar dari Cloudinary:", cloudinaryError);
       }
     }
 
@@ -428,7 +428,7 @@ export const deleteReservasi = async (req, res) => {
     console.error("Terjadi kesalahan saat menghapus reservasi:", error);
 
     if (error.code === 'P2025') {
-      return res.status(200).json({ msg: "Reservasi sudah tidak ditemukan atau telah dihapus oleh proses lain." });
+      return res.status(200).json({ msg: "Reservasi sudah tidak ditemukan atau telah dihapus oleh Disetujui lain." });
     }
     
     res.status(500).json({ msg: error.message });

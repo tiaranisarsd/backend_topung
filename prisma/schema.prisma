@@ -112,7 +112,7 @@ model reservasi {
   keluhan          String
   pembayaran       String
   bukti_pembayaran String?
-  status           String          @default("pending")
+  status           String          @default("Menunggu")
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
   userId           Int?

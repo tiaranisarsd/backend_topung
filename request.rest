@@ -354,7 +354,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
     "keluhan": "sakit punggung",
     "pembayaran": "Tunai",
     "bukti_pembayaran": "",
-    "status": "pending"
+    "status": "Menunggu"
 }
 
 ###
@@ -374,7 +374,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
     "keluhan": "sakit punggung",
     "pembayaran": "transfer",
     "bukti_pembayaran": "https://res.cloudinary.com/di6b7cor8/image/upload/v1748359947/reservasi/fahtvybv5510yvjmkzxk.jpg",
-    "status": "pending"
+    "status": "Menunggu"
 }
 
 ###
