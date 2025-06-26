@@ -5,11 +5,10 @@ import cloudinary from "../cloudinaryConfig.js";
 
 export const getReservasi = async (req, res) => {
   try {
-    const { id, role } = req.user; // Extract user info from middleware (adjust based on your setup)
+    const { id, role } = req.user;
     let response;
 
     if (role === 'owner') {
-      // Option 1: Admin sees all response (currently active)
       response = await prisma.reservasi.findMany({
         include: {
           users: {
@@ -26,35 +25,10 @@ export const getReservasi = async (req, res) => {
           },
         },
       });
-
-      // Option 2: Admin sees only their response (uncomment if desired)
-      // response = await prisma.reservasi.findMany({
-      //   where: {
-      //     userId: id // Filter by admin's user ID (adjust field based on schema)
-      //     // OR if filtering by nama directly:
-      //     // nama: nama
-      //   },
-      //   include: {
-      //     users: {
-      //       select: {
-      //         nama: true
-      //       },
-      //     },
-      //     jadwal: {
-      //       select: {
-      //         hari: true,
-      //         jam: true
-      //       },
-      //     },
-      //   },
-      // });
     } else {
-      // Regular users see only their response
       response = await prisma.reservasi.findMany({
         where: {
-          userId: id // Filter by user's ID (adjust field based on schema)
-          // OR if filtering by nama directly:
-          // nama: nama
+          userId: id
         },
         include: {
           users: {
@@ -72,6 +46,67 @@ export const getReservasi = async (req, res) => {
         },
       });
     }
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error('Error fetching response:', error);
+    res.status(500).json({ msg: error.message });
+  }
+};
+
+export const getStatus = async (req, res) => {
+  try {
+    const query = req.query.query?.toLowerCase();
+
+    const altQuery = query.startsWith('0') ? '62' + query.slice(1) :
+                     query.startsWith('62') ? '0' + query.slice(2) : null;
+
+    const response = await prisma.reservasi.findMany({
+      where: {
+        OR: [
+          {
+            nama: {
+              contains: query,
+              mode: 'insensitive'
+            }
+          },
+          {
+            no_telp: {
+              contains: query,
+              mode: 'insensitive'
+            }
+          },
+          ...(altQuery ? [{
+            no_telp: {
+              contains: altQuery,
+              mode: 'insensitive'
+            }
+          }] : [])
+        ]
+      },
+      select: {
+        no_telp: true,
+        layanan: true,
+        tanggal_waktu: true,
+        nama: true,
+        usia: true,
+        alamat: true,
+        pembayaran: true,
+        status: true,
+        users: {
+          select: {
+            nama: true
+          }
+        },
+        jadwal: {
+          select: {
+            id: true,
+            hari: true,
+            jam: true
+          }
+        }
+      }
+    });
 
     res.status(200).json(response);
   } catch (error) {
@@ -114,26 +149,19 @@ export const createReservasi = async (req, res) => {
   const bukti_pembayaran = req.file ? req.file.path : '';
   const { layanan, tanggal_waktu, nama, alamat, keluhan, pembayaran, status } = req.body;
   
-  // Parse usia, userId, and jadwalId
   const usia = parseInt(req.body.usia, 10);
-  const userId = parseInt(req.body.userId, 10); // Ensure userId is an integer
-  const jadwalId = parseInt(req.body.jadwalId, 10); // Ensure jadwalId is an integer
-  const no_telp = req.body.no_telp; // Assuming no_telp is already a formatted string
+  const userId = parseInt(req.body.userId, 10);
+  const jadwalId = parseInt(req.body.jadwalId, 10);
+  const no_telp = req.body.no_telp;
 
-  console.log("Received jadwalId:", req.body.jadwalId); // Log untuk debugging
-  console.log("Received userId:", req.body.userId); // Log untuk debugging
+  console.log("Received jadwalId:", req.body.jadwalId);
+  console.log("Received userId:", req.body.userId);
 
   try {
-    // Validasi apakah userId ada di tabel users
-    // const user = await prisma.user.findUnique({
-    //   where: { id: userId },
-    // });
-
     if (!userId) {
       return res.status(400).json({ msg: "Terapis yang dipilih tidak ditemukan. Silakan pilih terapis yang valid." });
     }
 
-    // Validasi apakah jadwalId ada di tabel jadwal_terapis
     const jadwal = await prisma.jadwal_terapis.findUnique({
       where: { id: jadwalId },
     });
@@ -142,11 +170,10 @@ export const createReservasi = async (req, res) => {
       return res.status(400).json({ msg: "Jadwal yang dipilih tidak ditemukan atau sudah tidak tersedia. Silakan pilih jadwal lain." });
     }
 
-    // Validasi apakah jadwal sudah dipesan dengan status "Disetujui"
     const existingReservasi = await prisma.reservasi.findFirst({
       where: {
         jadwalId: jadwalId,
-        status: "Disetujui", // Hanya cek reservasi dengan status "Disetujui"
+        status: "Disetujui",
       },
     });
 
@@ -154,7 +181,6 @@ export const createReservasi = async (req, res) => {
       return res.status(400).json({ msg: "Maaf, jadwal yang Anda pilih sudah dipesan oleh pelanggan lain dan sedang dalam Disetujui. Silakan pilih jadwal lain." });
     }
 
-    // Jika semua validasi lolos, buat reservasi baru
     const newReservasi = await prisma.reservasi.create({
       data: {
         layanan: layanan,
@@ -176,7 +202,6 @@ export const createReservasi = async (req, res) => {
   } catch (error) {
     console.error("Error creating reservasi:", error);
     if (error.code === 'P2003') {
-      // Foreign key constraint error
       return res.status(400).json({ msg: "Gagal membuat reservasi: Terapis atau jadwal yang dipilih tidak valid atau tidak ditemukan." });
     }
     res.status(400).json({ msg: error.message });
@@ -184,13 +209,9 @@ export const createReservasi = async (req, res) => {
 };
 
 
-
-
-// controllers/reservasiController.js
 export const updateReservasiStatus = async (req, res) => {
   const { id, status } = req.body;
   try {
-    // Ambil data reservasi terlebih dahulu untuk mendapatkan jadwalId
     const reservasi = await prisma.reservasi.findUnique({
       where: { id: id },
     });
@@ -199,10 +220,8 @@ export const updateReservasiStatus = async (req, res) => {
       return res.status(404).json({ msg: "Reservasi tidak ditemukan." });
     }
 
-    // Log reservasi sebelum update untuk debugging
     console.log("Reservasi sebelum update:", reservasi);
 
-    // Jika status diubah menjadi "Disetujui" dan ada jadwalId, hapus jadwal_terapis
     if (status === "Disetujui") {
       if (reservasi.jadwalId) {
         try {
@@ -216,7 +235,6 @@ export const updateReservasiStatus = async (req, res) => {
         }
       } else {
         console.log("No jadwalId found for this reservasi.");
-        // Set status to "Dibatalkan" if jadwalId is not found
         await prisma.reservasi.update({
           where: { id: id },
           data: { status: "Dibatalkan" },
@@ -225,7 +243,6 @@ export const updateReservasiStatus = async (req, res) => {
       }
     }
 
-    // Update status reservasi
     const updatedReservasi = await prisma.reservasi.update({
       where: { id: id },
       data: { 
@@ -233,7 +250,6 @@ export const updateReservasiStatus = async (req, res) => {
       },
     });
 
-    // Log reservasi setelah update
     console.log("Updated Reservasi:", updatedReservasi);
 
     res.status(200).json({ msg: "Status reservasi berhasil diperbarui", reservasi: updatedReservasi });
@@ -243,24 +259,19 @@ export const updateReservasiStatus = async (req, res) => {
   }
 };
 
-
-
-// controllers/jadwalTerapisController.js
 export const getAvailableJadwalTerapis = async (req, res) => {
   try {
-    // Ambil semua jadwal terapis beserta reservasi yang terkait
     const jadwalTerapis = await prisma.jadwal_terapis.findMany({
       include: {
         reservasi: {
-          where: { status: "Disetujui" }, // Hanya ambil reservasi dengan status "Disetujui"
+          where: { status: "Disetujui" },
         },
         user: {
-          select: { nama: true, email: true }, // Informasi terapis
+          select: { nama: true, email: true },
         },
       },
     });
 
-    // Filter jadwal yang tidak memiliki reservasi dengan status "Disetujui"
     const availableJadwal = jadwalTerapis.filter(jadwal => jadwal.reservasi.length === 0);
 
     res.status(200).json(availableJadwal);
@@ -273,7 +284,6 @@ export const getAvailableJadwalTerapis = async (req, res) => {
 
 export const updateReservasi = async (req, res) => {
   try {
-    // Check if the reservation exists
     const reservasi = await prisma.reservasi.findUnique({
       where: {
         id: Number(req.params.id),
@@ -284,7 +294,6 @@ export const updateReservasi = async (req, res) => {
       return res.status(404).json({ msg: "Reservasi tidak ditemukan" });
     }
 
-    // Extract data from request body (only update fields that are provided)
     const {
       layanan,
       tanggal_waktu,
@@ -296,7 +305,6 @@ export const updateReservasi = async (req, res) => {
       status,
     } = req.body;
 
-    // Parse usia if provided and validate
     let usia;
     if (req.body.usia !== undefined) {
       usia = parseInt(req.body.usia, 10);
@@ -305,13 +313,11 @@ export const updateReservasi = async (req, res) => {
       }
     }
 
-    // Parse userId and jadwalId if provided
     const userId = req.body.userId ? parseInt(req.body.userId, 10) : undefined;
     const jadwalId = req.body.jadwalId ? parseInt(req.body.jadwalId, 10) : undefined;
 
-    // Validate status if provided
     if (status) {
-      const validStatuses = ['Menunggu', 'Disetujui', 'Selesai']; // Adjust based on your allowed statuses
+      const validStatuses = ['Menunggu', 'Disetujui', 'Selesai'];
       if (!validStatuses.includes(status)) {
         return res.status(400).json({
           msg: `Status harus salah satu dari: ${validStatuses.join(', ')}`,
@@ -319,7 +325,6 @@ export const updateReservasi = async (req, res) => {
       }
     }
 
-    // Handle bukti_pembayaran (file upload) if a new file is provided
     let bukti_pembayaran = reservasi.bukti_pembayaran;
   if (req.file) {
     if (reservasi.bukti_pembayaran) {
@@ -352,7 +357,6 @@ export const updateReservasi = async (req, res) => {
     if (userId !== undefined && !isNaN(userId)) updateData.userId = userId;
     if (jadwalId !== undefined && !isNaN(jadwalId)) updateData.jadwalId = jadwalId;
 
-    // Perform the update
     const updatedReservasi = await prisma.reservasi.update({
       where: {
         id: Number(req.params.id),

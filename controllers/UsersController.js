@@ -40,7 +40,6 @@ export const getUsers = async (req, res) => {
 
 export const createUsers = async (req, res) => {
   try {
-    // Check if user is authenticated (e.g., owner role check)
     if (!req.user) {
       return res.status(401).json({ msg: "User tidak terautentikasi. Silakan login." });
     }
@@ -50,7 +49,6 @@ export const createUsers = async (req, res) => {
       return res.status(403).json({ msg: "Akses ditolak. Hanya owner yang dapat membuat user baru." });
     }
 
-    // Handle form fields
     const { nama, email, password, confPassword, role: userRole, no_telp, harga, alamat, bank, no_rekening } = req.body;
 
     if (!nama || !email || !password || !confPassword || !userRole ) {

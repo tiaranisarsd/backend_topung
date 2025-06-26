@@ -4,6 +4,7 @@ import {
     getReservasiById,
     createReservasi,
     getAvailableJadwalTerapis,
+    getStatus,
     updateReservasiStatus,
     updateReservasi,
     deleteReservasi
@@ -17,6 +18,7 @@ router.get('/reservasi',verifyUser, getReservasi);
 router.get('/reservasi/:id',verifyUser, getReservasiById);
 router.get('/availableJadwalTerapis', getAvailableJadwalTerapis);
 router.patch('/reservasi/status', updateReservasiStatus);
+router.get('/status', getStatus);
 router.post('/reservasi', uploadReservasi.single('bukti_pembayaran'), createReservasi);
 router.patch('/reservasi/:id', verifyUser, uploadReservasi.single('bukti_pembayaran'), updateReservasi);
 router.delete('/reservasi/:id', verifyUser, deleteReservasi);
