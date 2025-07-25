@@ -1,11 +1,21 @@
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import multer from 'multer';
-import cloudinary from './cloudinaryConfig.js';
 import path from 'path';
+import fs from 'fs';
+
+// Helper function to create directory if it doesn't exist
+const createDirectory = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+};
 
 // Configuration for Testimoni uploads
 const storageTestimoni = multer.diskStorage({
-  destination: './uploads/testimoni/',
+  destination: (req, file, cb) => {
+    const dir = path.join(process.cwd(), 'uploads/testimoni/');
+    createDirectory(dir); // Ensure the directory exists
+    cb(null, dir);
+  },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
@@ -13,32 +23,41 @@ const storageTestimoni = multer.diskStorage({
 });
 
 // Configuration for Reservasi uploads
-const storageReservasi = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'reservasi',
-    allowed_formats: ['jpg', 'png', 'jpeg'],
-    transformation: [{ width: 1200, height: 800, crop: 'limit' }],
+const storageReservasi = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(process.cwd(), 'uploads/reservasi/');
+    createDirectory(dir); // Ensure the directory exists
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
   },
 });
 
 // Configuration for Users Gambar uploads (Image files)
-const storageUsersGambar = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'users/gambar',
-    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
-    transformation: [{ width: 500, height: 500, crop: 'thumb', gravity: 'face' }],
+const storageUsersGambar = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(process.cwd(), 'uploads/users/gambar/');
+    createDirectory(dir); // Ensure the directory exists
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
   },
 });
 
 // Configuration for Users CV PDF uploads (PDF files)
-const storageUsersCV = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'users/cv',
-    allowed_formats: ['pdf'],
-    resource_type: 'raw', // Important for non-image files like PDF
+const storageUsersCV = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(process.cwd(), 'uploads/users/cv/');
+    createDirectory(dir); // Ensure the directory exists
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
   },
 });
 
@@ -88,13 +107,16 @@ const uploadTestimoni = multer({
     }
     cb(null, true);
   },
-limits: { fileSize: 5 * 1024 * 1024 } 
+  limits: { fileSize: 5 * 1024 * 1024 } 
 });
 
-
-// Definisi storage (pastikan ini sesuai dengan kebutuhan Anda)
+// Configuration for Dokumentasi uploads
 const storageDokumentasi = multer.diskStorage({
-  destination: './uploads/dokumentasi_topung/',
+  destination: (req, file, cb) => {
+    const dir = path.join(process.cwd(), 'uploads/dokumentasi_topung/');
+    createDirectory(dir); // Ensure the directory exists
+    cb(null, dir);
+  },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
@@ -119,11 +141,10 @@ const uploadDokumentasi = multer({
     }
     cb(null, true);
   },
-limits: { fileSize: 5 * 1024 * 1024 } 
+  limits: { fileSize: 5 * 1024 * 1024 } 
 });
 
 // Middleware untuk menangani kesalahan multer (opsional, tambahkan di rute)
-
 export const handleMulterError = (err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     // Check if the error is due to file size limit
@@ -138,11 +159,6 @@ export const handleMulterError = (err, req, res, next) => {
   }
   next();
 };
-
-
-
-
-
 
 const uploadReservasi = multer({ 
   storage: storageReservasi,

@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-import cloudinary from "../cloudinaryConfig.js";
-
+import fs from 'fs';
+import path from 'path';
 
 export const getReservasi = async (req, res) => {
   try {
@@ -146,9 +146,18 @@ export const getReservasiById = async (req, res) => {
 };
 
 export const createReservasi = async (req, res) => {
-  const bukti_pembayaran = req.file ? req.file.path : '';
+  // Pastikan multer sudah dikonfigurasi untuk menyimpan file di 'uploads/reservasi/'
+  // req.file akan berisi informasi tentang file yang diunggah
+  let bukti_pembayaran = '';
+  if (req.file) {
+    // Bangun path yang diinginkan secara eksplisit
+    bukti_pembayaran = `/uploads/reservasi/${req.file.filename}`;
+    console.log(`File bukti pembayaran diunggah: ${bukti_pembayaran}`);
+  }
+
   const { layanan, tanggal_waktu, nama, alamat, keluhan, pembayaran, status } = req.body;
-  
+
+  // Pastikan konversi tipe data aman
   const usia = parseInt(req.body.usia, 10);
   const userId = parseInt(req.body.userId, 10);
   const jadwalId = parseInt(req.body.jadwalId, 10);
@@ -158,7 +167,17 @@ export const createReservasi = async (req, res) => {
   console.log("Received userId:", req.body.userId);
 
   try {
-    if (!userId) {
+    if (isNaN(userId)) { 
+      return res.status(400).json({ msg: "ID Terapis tidak valid. Silakan pilih terapis yang valid." });
+    }
+    if (isNaN(jadwalId)) { 
+      return res.status(400).json({ msg: "ID Jadwal tidak valid. Silakan pilih jadwal yang valid." });
+    }
+
+    const userExists = await prisma.users.findUnique({
+      where: { id: userId },
+    });
+    if (!userExists) {
       return res.status(400).json({ msg: "Terapis yang dipilih tidak ditemukan. Silakan pilih terapis yang valid." });
     }
 
@@ -170,6 +189,7 @@ export const createReservasi = async (req, res) => {
       return res.status(400).json({ msg: "Jadwal yang dipilih tidak ditemukan atau sudah tidak tersedia. Silakan pilih jadwal lain." });
     }
 
+    // Periksa apakah jadwal sudah dipesan dan disetujui
     const existingReservasi = await prisma.reservasi.findFirst({
       where: {
         jadwalId: jadwalId,
@@ -181,17 +201,18 @@ export const createReservasi = async (req, res) => {
       return res.status(400).json({ msg: "Maaf, jadwal yang Anda pilih sudah dipesan oleh pelanggan lain dan sedang dalam Disetujui. Silakan pilih jadwal lain." });
     }
 
+    // Buat reservasi baru
     const newReservasi = await prisma.reservasi.create({
       data: {
         layanan: layanan,
         tanggal_waktu: tanggal_waktu,
         nama: nama,
-        usia,
+        usia: usia, // Pastikan usia adalah angka
         no_telp: no_telp,
         alamat: alamat,
         keluhan: keluhan,
         pembayaran: pembayaran,
-        bukti_pembayaran: bukti_pembayaran,
+        bukti_pembayaran: bukti_pembayaran, // Sekarang akan menyimpan '/uploads/reservasi/nama_file.ext'
         status: status,
         userId: userId,
         jadwalId: jadwalId
@@ -202,9 +223,10 @@ export const createReservasi = async (req, res) => {
   } catch (error) {
     console.error("Error creating reservasi:", error);
     if (error.code === 'P2003') {
+      // P2003 adalah kode error Prisma untuk foreign key constraint failed
       return res.status(400).json({ msg: "Gagal membuat reservasi: Terapis atau jadwal yang dipilih tidak valid atau tidak ditemukan." });
     }
-    res.status(400).json({ msg: error.message });
+    res.status(400).json({ msg: error.message || "Failed to create reservasi" });
   }
 };
 
@@ -384,39 +406,14 @@ export const deleteReservasi = async (req, res) => {
       return res.status(200).json({ msg: "Data reservasi sudah tidak ditemukan atau telah dihapus." });
     }
 
+    // Hapus file dari folder lokal jika ada
     if (reservasi.bukti_pembayaran) {
-      let publicId = null;
-      try {
-
-        const urlParts = reservasi.bukti_pembayaran.split('/upload/');
-        if (urlParts.length > 1) {
-          const pathAfterUpload = urlParts[1]; 
-          const segments = pathAfterUpload.split('/');
-
-          const versionSegmentIndex = segments.findIndex(s => s.startsWith('v') && !isNaN(parseInt(s.substring(1))));
-
-          if (versionSegmentIndex !== -1) {
-            const publicIdWithPathAndExtension = segments.slice(versionSegmentIndex + 1).join('/');
-            publicId = publicIdWithPathAndExtension.split('.')[0];
-          }
-        }
-        
-        if (!publicId) {
-          console.warn(`Peringatan: Gagal mengekstrak Public ID dari URL: ${reservasi.bukti_pembayaran}. Gambar mungkin tidak terhapus dari Cloudinary.`);
-        } else {
-            const cloudinaryResult = await cloudinary.uploader.destroy(publicId);
-            console.log("Hasil penghapusan gambar dari Cloudinary:", cloudinaryResult);
-
-            if (cloudinaryResult.result === 'not found') {
-                console.warn(`Peringatan: Gambar dengan Public ID "${publicId}" tidak ditemukan di Cloudinary. Mungkin sudah dihapus atau ID salah.`);
-
-            } else if (cloudinaryResult.result !== 'ok') {
-                console.error(`Error: Gagal menghapus gambar dari Cloudinary. Pesan: ${cloudinaryResult.result}`);
-
-            }
-        }
-      } catch (cloudinaryError) {
-        console.error("Kesalahan umum saat memDisetujui penghapusan gambar dari Cloudinary:", cloudinaryError);
+      const filePath = path.join(process.cwd(), reservasi.bukti_pembayaran);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.log(`File deleted: ${filePath}`);
+      } else {
+        console.warn(`File not found: ${filePath}`);
       }
     }
 

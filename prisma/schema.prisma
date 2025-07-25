@@ -8,20 +8,21 @@ datasource db {
 }
 
 model users {
-  id              Int               @id @default(autoincrement())
-  nama            String
-  email           String
-  password        String
-  role            String
-  createdAt       DateTime          @default(now())
-  alamat          String?
-  gambar          String?
-  jadwalId        Int?
-  no_rekening     String?
-  no_telp         String?
-  harga           String?
-  bank            String?
-  cv_pdf          String?
+  id              Int       @id @default(autoincrement())
+  nama            String    @db.VarChar(35) 
+  email           String    @db.VarChar(50) @unique 
+  password        String    @db.VarChar(255) 
+  role            String    @db.VarChar(8) 
+  createdAt       DateTime  @default(now())
+  alamat          String?   @db.VarChar(50) 
+  gambar          String?   @db.VarChar(100)
+  jadwalId        Int? 
+  no_rekening     String?   @db.VarChar(25) 
+  no_telp         String?   @db.VarChar(15) 
+  harga           String?   @db.VarChar(15) 
+  bank            String?   @db.VarChar(15)
+  cv_pdf          String?   @db.VarChar(100) 
+
   dokumentasi     dokumentasi[]
   edukasi         edukasi[]
   jadwal_kegiatan jadwal_kegiatan[]
@@ -35,88 +36,98 @@ model users {
 model edukasi {
   id        Int      @id @default(autoincrement())
   userId    Int
-  konten    String
+  konten    String   @db.Text 
   createdAt DateTime @default(now())
+
   user      users    @relation(fields: [userId], references: [id])
 }
 
 model token {
   id        Int      @id @default(autoincrement())
-  token     String   @unique
+  token     String   @unique @db.VarChar(255) 
   userId    Int
   expiresAt DateTime
   createdAt DateTime @default(now())
   revoked   Boolean  @default(false)
+
   user      users    @relation(fields: [userId], references: [id])
 }
 
 model jadwal_kegiatan {
-  id             Int    @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   userId         Int
-  tanggal_waktu  String
-  jenis_kegiatan String
-  lokasi         String
-  deskripsi      String
-  user           users  @relation(fields: [userId], references: [id])
+  tanggal_waktu  String   @db.VarChar(25)  
+  jenis_kegiatan String   @db.VarChar(15) 
+  lokasi         String   @db.VarChar(50) 
+  deskripsi      String   @db.Text         
+
+  user           users    @relation(fields: [userId], references: [id])
 }
 
 model jadwal_terapis {
   id        Int         @id @default(autoincrement())
   userId    Int
-  hari      String
-  jam       String
+  hari      String      @db.VarChar(15)  
+  jam       String      @db.VarChar(20)  
+  
   user      users       @relation(fields: [userId], references: [id])
   reservasi reservasi[]
 }
 
 model dokumentasi {
-  id     Int    @id @default(autoincrement())
-  userId Int
-  gambar String
-  judul  String
-  user   users  @relation(fields: [userId], references: [id])
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  thumbnail String?  @db.VarChar(100) 
+  gambar    String   @db.VarChar(100) 
+  judul     String   @db.VarChar(50) 
+  
+  user      users    @relation(fields: [userId], references: [id])
 }
 
 model testimoni {
-  id     Int    @id @default(autoincrement())
-  userId Int
-  media  String
-  user   users  @relation(fields: [userId], references: [id])
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  thumbnail String?  @db.VarChar(100) 
+  media     String   @db.VarChar(100) 
+  
+  user      users    @relation(fields: [userId], references: [id])
 }
 
 model pertanyaan {
-  id               Int    @id @default(autoincrement())
+  id               Int      @id @default(autoincrement())
   userId           Int
-  judul_pertanyaan String
-  isi_pertanyaan   String
-  user             users  @relation(fields: [userId], references: [id])
+  judul_pertanyaan String   @db.VarChar(50) 
+  isi_pertanyaan   String   @db.Text         
+  
+  user             users    @relation(fields: [userId], references: [id])
 }
 
 model tinjauan {
   id        Int      @id @default(autoincrement())
-  nama      String
-  layanan   String
+  nama      String   @db.VarChar(50) 
+  layanan   String   @db.VarChar(25) 
   rating    Int
-  tinjauan  String   @default("")
+  tinjauan  String   @default("") @db.Text 
   createdAt DateTime @default(now())
 }
 
 model reservasi {
-  id               Int             @id @default(autoincrement())
-  layanan          String
-  tanggal_waktu    String
-  nama             String
+  id               Int            @id @default(autoincrement())
+  layanan          String         @db.VarChar(25) 
+  tanggal_waktu    String         @db.VarChar(50)  
+  nama             String         @db.VarChar(35) 
   usia             Int
-  no_telp          String
-  alamat           String
-  keluhan          String
-  pembayaran       String
-  bukti_pembayaran String?
-  status           String          @default("Menunggu")
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
+  no_telp          String         @db.VarChar(15)  
+  alamat           String         @db.VarChar(50)
+  keluhan          String         @db.Text         
+  pembayaran       String         @db.VarChar(15)  
+  bukti_pembayaran String?        @db.VarChar(100) 
+  status           String         @default("Menunggu") @db.VarChar(25)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
   userId           Int?
-  jadwalId         Int?
+  jadwalId         Int? 
+
   jadwal           jadwal_terapis? @relation(fields: [jadwalId], references: [id])
-  users            users?          @relation(fields: [userId], references: [id])
+  users            users?         @relation(fields: [userId], references: [id])
 }

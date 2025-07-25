@@ -1,5 +1,6 @@
 import {PrismaClient} from "@prisma/client";
-import cloudinary from "../cloudinaryConfig.js";
+import fs from 'fs';
+import path from 'path';
 
 const prisma = new PrismaClient();
 
@@ -48,15 +49,17 @@ export const createTestimoni= async (req, res) => {
 
   try {
     let media = '';
+    let thumbnail = '';
     if (req.file) {
-      const isVideo = req.file.mimetype.startsWith('video/');
-      const resourceType = isVideo ? 'video' : 'image';
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        resource_type: resourceType,
-        folder: 'testimoni'
-      });
-      media = result.secure_url; 
-      console.log(`File uploaded to Cloudinary: ${media}`);
+      media = `/uploads/testimoni/${req.file.filename}`;
+      console.log(`File uploaded: ${media}, Type: ${req.file.mimetype}`);
+      // Jika file adalah video, gunakan path placeholder untuk thumbnail
+    if (req.file.mimetype.startsWith('video/')) {
+      thumbnail = ''; // Tidak mencoba membuat thumbnail
+      console.log(`Skipping thumbnail generation for video.`);
+    }
+
+      console.log(`File saved locally: ${media}`);
     }
 
     await prisma.testimoni.create({
@@ -89,46 +92,32 @@ export const updateTestimoni = async (req, res) => {
     }
 
     let media = testimoni.media;
+    let thumbnail = testimoni.thumbnail || '';
     if (req.file) {
+      // Hapus file lama jika ada
       if (testimoni.media) {
-        try {
-          const urlParts = testimoni.media.split('/');
-          const uploadIndex = urlParts.findIndex(part => part === 'upload');
-          let publicId = urlParts.slice(uploadIndex + 2).join('/'); 
-          publicId = publicId.split('.')[0]; 
-          const isVideo = testimoni.media.endsWith('.mp4') || testimoni.media.endsWith('.webm') || testimoni.media.endsWith('.mov');
-          const resourceType = isVideo ? 'video' : 'image';
-
-          if (publicId) {
-            const result = await cloudinary.uploader.destroy(publicId, {
-              resource_type: resourceType
-            });
-            console.log("Old file deleted from Cloudinary:", result);
-            if (result.result === 'not found') {
-              console.warn("File not found in Cloudinary, proceeding with update.");
-            }
-          } else {
-            console.warn("Could not extract publicId from URL, skipping deletion.");
-          }
-        } catch (err) {
-          console.error("Error deleting file from Cloudinary:", err);
-          console.warn("Proceeding with update despite Cloudinary deletion error.");
+        const oldFilePath = path.join(process.cwd(), testimoni.media);
+        if (fs.existsSync(oldFilePath)) {
+          fs.unlinkSync(oldFilePath);
+          console.log(`Old file deleted: ${oldFilePath}`);
+        } else {
+          console.warn(`Old file not found: ${oldFilePath}`);
         }
       }
 
-      const isVideo = req.file.mimetype.startsWith('video/');
-      const resourceType = isVideo ? 'video' : 'image';
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        resource_type: resourceType,
-        folder: 'testimoni'
-      });
-      media = result.secure_url; 
-      console.log(`New file uploaded to Cloudinary: ${media}`);
+      media = `/uploads/testimoni/${req.file.filename}`;
+if (req.file.mimetype.startsWith('video/')) {
+  thumbnail = '';
+  console.log(`Skipping thumbnail generation for video.`);
+}
+
+      console.log(`New file saved locally: ${media}`);
     }
+
 
     await prisma.testimoni.update({
       where: { id: Number(id) },
-      data: { media},
+      data: { media, thumbnail},
     });
 
     res.status(200).json({ msg: "Testimoni updated successfully" });
@@ -150,21 +139,26 @@ export const deleteTestimoni = async (req, res) => {
       return res.status(404).json({ msg: "Testimoni tidak ditemukan" });
     }
 
+    // Hapus file dari folder lokal jika ada
     if (testimoni.media) {
-          const urlParts = testimoni.media.split('/');
-          const uploadIndex = urlParts.findIndex(part => part === 'upload');
-          let publicId = urlParts.slice(uploadIndex + 2).join('/'); 
-          publicId = publicId.split('.')[0]; 
-
-      cloudinary.uploader.destroy(publicId, async (error, result) => {
-        if (error) {
-          console.error("Error deleting image from Cloudinary:", error);
-          return res
-            .status(500)
-            .json({ msg: "Error deleting image from Cloudinary" });
-        }
-        console.log("Old image deleted from Cloudinary:", result);
-
+      const filePath = path.join(process.cwd(), testimoni.media);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.log(`File deleted: ${filePath}`);
+      } else {
+        console.warn(`File not found: ${filePath}`);
+      }
+    }
+    // Hapus thumbnail dari folder lokal jika ada
+    if (testimoni.thumbnail) {
+      const thumbnailPath = path.join(process.cwd(), testimoni.thumbnail);
+      if (fs.existsSync(thumbnailPath)) {
+        fs.unlinkSync(thumbnailPath);
+        console.log(`Thumbnail deleted: ${thumbnailPath}`);
+      } else {
+        console.warn(`Thumbnail not found: ${thumbnailPath}`);
+      }
+    }
         await prisma.testimoni.delete({
           where: {
             id: Number(req.params.id),
@@ -172,15 +166,6 @@ export const deleteTestimoni = async (req, res) => {
         });
 
         res.status(200).json({ msg: "Testimoni deleted successfully" });
-      });
-    } else {
-      await prisma.testimoni.delete({
-        where: {
-          id: Number(req.params.id),
-        },
-      });
-      res.status(200).json({ msg: "Testimoni deleted successfully" });
-    }
   } catch (error) {
     console.error("Error deleting testimoni:", error);
     res.status(500).json({ msg: error.message }); 
