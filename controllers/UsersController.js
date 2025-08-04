@@ -160,7 +160,7 @@ export const getUsersById = async (req, res) => {
     if (!user) {
       return res.status(404).json({ msg: "Data tidak ditemukan." });
     }
-    console.log("Dokumentasi Response:", user);
+    console.log("Users Response:", user);
     return res.status(200).json(user);
     
   } catch (error) {
