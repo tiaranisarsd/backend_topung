@@ -46,7 +46,6 @@ export const Login = async (req, res) => {
     const { id, nama, email, role } = user;
     res.status(200).json({ id, nama, email, role, token });
   } catch (error) {
-    // Error dari generateAndStoreToken akan ditangkap di sini
     console.error("Login error:", error);
     res.status(500).json({ msg: "Login failed", error });
   }
@@ -93,27 +92,25 @@ export const Me = async (req, res) => {
 
 export const logOut = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
+    const token = req.headers.authorization?.split(" ")[1]; 
     if (!token) {
-      return res.status(401).json({ msg: "Token tidak ditemukan" }); // If no token is provided
+      return res.status(401).json({ msg: "Token tidak ditemukan" }); 
     }
 
-    // Try to delete the token from the database (prisma example)
     try {
       await prisma.token.delete({
         where: {
           token: token,
         },
       });
-      res.status(200).json({ msg: "Logout successful" }); // Return success message
+      res.status(200).json({ msg: "Logout successful" }); 
     } catch (error) {
-      // If the token doesn't exist or is expired, handle it
       if (error.code === 'P2025') {
         return res.status(401).json({ msg: "Invalid or Expired Token" });
       }
 
       console.error("Error during logout:", error);
-      res.status(500).json({ msg: "Logout Failed", error }); // General error
+      res.status(500).json({ msg: "Logout Failed", error }); 
     }
   } catch (error) {
     console.error("Error during logout process:", error);

@@ -14,9 +14,8 @@ export const createDokumentasi = async (req, res) => {
     if (req.file) {
       gambar = `/uploads/dokumentasi_topung/${req.file.filename}`;
       console.log(`File uploaded: ${gambar}, Type: ${req.file.mimetype}`);
-      // Jika file adalah video, gunakan path placeholder untuk thumbnail
 if (req.file.mimetype.startsWith('video/')) {
-  thumbnail = ''; // Tidak mencoba membuat thumbnail
+  thumbnail = ''; 
   console.log(`Skipping thumbnail generation for video.`);
 }
 
@@ -58,7 +57,6 @@ export const updateDokumentasi = async (req, res) => {
     let gambar = dokumentasi.gambar;
     let thumbnail = dokumentasi.thumbnail || '';
     if (req.file) {
-      // Hapus file lama jika ada
       if (dokumentasi.gambar) {
         const oldFilePath = path.join(process.cwd(), dokumentasi.gambar);
         if (fs.existsSync(oldFilePath)) {
@@ -146,7 +144,6 @@ export const deleteDokumentasi = async (req, res) => {
       return res.status(404).json({ msg: "Data tidak ditemukan" });
     }
 
-    // Hapus file dari folder lokal jika ada
     if (dokumentasi.gambar) {
       const filePath = path.join(process.cwd(), dokumentasi.gambar);
       if (fs.existsSync(filePath)) {
@@ -156,7 +153,7 @@ export const deleteDokumentasi = async (req, res) => {
         console.warn(`File not found: ${filePath}`);
       }
     }
-    // Hapus thumbnail dari folder lokal jika ada
+    
     if (dokumentasi.thumbnail) {
       const thumbnailPath = path.join(process.cwd(), dokumentasi.thumbnail);
       if (fs.existsSync(thumbnailPath)) {

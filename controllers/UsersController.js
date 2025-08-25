@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const UPLOAD_DIR = path.join(__dirname, '../uploads/users'); // Adjust the path as necessary
+const UPLOAD_DIR = path.join(__dirname, '../uploads/users');
 
 const prisma = new PrismaClient();
 
@@ -63,16 +63,13 @@ export const createUsers = async (req, res) => {
       return res.status(400).json({ msg: "Password dan Konfirmasi Password tidak cocok." });
     }
 
-    // Check if email already exists
     const existingUser  = await prisma.users.findFirst({ where: { email } });
     if (existingUser ) {
       return res.status(400).json({ msg: "Email sudah terdaftar." });
     }
 
-    // Hash the password
     const hashPassword = await argon2.hash(password);
 
-    // Handle file uploads to local storage
     let gambar = null;
     let cv_pdf = null;
 
@@ -86,7 +83,6 @@ export const createUsers = async (req, res) => {
 
     if (req.files && req.files['cv_pdf'] && req.files['cv_pdf'].length > 0) {
       const file = req.files['cv_pdf'][0];
-      // Pastikan direktori 'cv' ada
       const uploadPathDir = path.join(UPLOAD_DIR, 'cv');
       if (!fs.existsSync(uploadPathDir)) {
         fs.mkdirSync(uploadPathDir, { recursive: true });
@@ -205,13 +201,11 @@ export const updateUsers = async (req, res) => {
       hashPassword = await argon2.hash(password);
     }
 
-    // Handle file uploads to local storage
     let gambar = user.gambar;
     let cv_pdf = user.cv_pdf;
 
     if (req.files && req.files['gambar'] && req.files['gambar'].length > 0) {
       const file = req.files['gambar'][0];
-      // Delete old gambar if it exists
       if (gambar) {
         const oldGambarPath = path.join(UPLOAD_DIR, gambar);
         if (fs.existsSync(oldGambarPath)) {
@@ -226,7 +220,6 @@ export const updateUsers = async (req, res) => {
     }
 
     if (req.files && req.files['cv_pdf'] && req.files['cv_pdf'].length > 0) {
-      // Delete old cv_pdf if it exists
       if (cv_pdf) {
         const oldCvPdfPath = path.join(UPLOAD_DIR, cv_pdf);
         if (fs.existsSync(oldCvPdfPath)) {
@@ -272,7 +265,6 @@ export const updateUsers = async (req, res) => {
 
 export const deleteUsers = async (req, res) => {
   try {
-    // Check if user is authenticated
     if (!req.user) {
       return res.status(401).json({ msg: 'User  tidak terautentikasi. Silakan login.' });
     }
@@ -293,7 +285,6 @@ export const deleteUsers = async (req, res) => {
       return res.status(404).json({ msg: "User  tidak ditemukan." });
     }
 
-    // Hapus gambar jika ada
     if (user.gambar) {
       const gambarPath = path.join(__dirname, '..', 'uploads', 'users', user.gambar);
       fs.unlink(gambarPath, (err) => {
@@ -305,7 +296,6 @@ export const deleteUsers = async (req, res) => {
       });
     }
 
-    // Hapus CV jika ada
     if (user.cv_pdf) {
       const cvPath = path.join(__dirname, '..', 'uploads', 'users', user.cv_pdf);
       fs.unlink(cvPath, (err) => {
@@ -317,7 +307,6 @@ export const deleteUsers = async (req, res) => {
       });
     }
 
-    // Hapus user dari database
     await prisma.users.delete({
       where: {
         id: Number(id),

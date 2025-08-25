@@ -1,25 +1,24 @@
-GET http://localhost:5000/users
+GET http://145.79.8.133:5000/users
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InRlcmFwaXMiLCJpYXQiOjE3NDkxOTI3NjMsImV4cCI6MTc0OTE5NjM2M30.FdsNmuAtPGYNKwcm2uqMGtVZD0MdzPKDBbd2RaNvB0s
 
 ###
-GET http://localhost:5000/users/1
+GET http://145.79.8.133:5000/users/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6Im93bmVyIiwiaWF0IjoxNzQ4NjkwNjgyLCJleHAiOjE3NDg2OTQyODJ9.mr43GUI6_NArIpeQJghxum1NDFIQL6AKJU5itAhfVO0
 
 ###
-POST http://localhost:5000/users
+POST http://145.79.8.133:5000/users
 Content-Type:  application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InRlcmFwaXMiLCJpYXQiOjE3NDkxOTI3NjMsImV4cCI6MTc0OTE5NjM2M30.FdsNmuAtPGYNKwcm2uqMGtVZD0MdzPKDBbd2RaNvB0s
 
 {
-    "nama": "terapis",
-    "email": "terapis@gmail.com",
+    "nama": "owner",
+    "email": "owner@gmail.com",
     "password": "123456",
     "confPassword": "123456",
-    "role": "terapis"
+    "role": "owner"
 }
 
 ###
-PATCH http://localhost:5000/users/1
+PATCH http://145.79.8.133:5000/users/1
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InRlcmFwaXMiLCJpYXQiOjE3NDkxOTI3NjMsImV4cCI6MTc0OTE5NjM2M30.FdsNmuAtPGYNKwcm2uqMGtVZD0MdzPKDBbd2RaNvB0s
 
@@ -40,11 +39,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
 }
 
 ###
-DELETE http://localhost:5000/users/2
+DELETE http://145.79.8.133:5000/users/2
 
 //LOGIN
 ###
-POST http://localhost:5000/login
+POST http://145.79.8.133:5000/login
 Content-Type: application/json
 
 {
@@ -53,23 +52,23 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/me
+GET http://145.79.8.133:5000/me
 Authorization: Bearer "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InRlcmFwaXMiLCJpYXQiOjE3NDkxOTI3NjMsImV4cCI6MTc0OTE5NjM2M30.FdsNmuAtPGYNKwcm2uqMGtVZD0MdzPKDBbd2RaNvB0s"
 
 //LOGOUT
 ###
-DELETE http://localhost:5000/logout
+DELETE http://145.79.8.133:5000/logout
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InRlcmFwaXMiLCJpYXQiOjE3NDg5MzM0MTgsImV4cCI6MTc0ODkzNzAxOH0.B13f1Ns6FH0Pz6OrkvqJ3EIfTQHiCuSHlf66ZVHqxcI
 
 //EDUKASI
 ###
-GET http://localhost:5000/edukasi
+GET http://145.79.8.133:5000/edukasi
 
 ###
-GET http://localhost:5000/edukasi/2
+GET http://145.79.8.133:5000/edukasi/2
 
 ###
-POST http://localhost:5000/edukasi
+POST http://145.79.8.133:5000/edukasi
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ2NzY1Nzg4LCJleHAiOjE3NDY3NjkzODh9.QW0E3BgV8FPn5xtwZeTgpLL02b6_bem95dupx3RK8U4
 
@@ -78,7 +77,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
 }
 
 ###
-PATCH http://localhost:5000/edukasi/1
+PATCH http://145.79.8.133:5000/edukasi/1
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ1ODI3Mzk4LCJleHAiOjE3NDU4MzA5OTh9.ruPa4MuO4sNGg5YhYiim9_-lillb_W6hwg77sh1BqBw
 
@@ -87,19 +86,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
 }
 
 ###
-DELETE http://localhost:5000/edukasi/1
+DELETE http://145.79.8.133:5000/edukasi/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0NTU2MzY5NywiZXhwIjoxNzQ1NTY3Mjk3fQ.WsWWVUJtnx9DVDGeJmM3H9ib0Z0w_PnrPjlyqjpoFQw
 
 
 //JADWAL KEGIATAN
 ###
-GET http://localhost:5000/jadwalKegiatan
+GET http://145.79.8.133:5000/jadwalKegiatan
 
 ###
-GET http://localhost:5000/jadwalKegiatan/1
+GET http://145.79.8.133:5000/jadwalKegiatan/1
 
 ###
-POST http://localhost:5000/jadwalKegiatan
+POST http://145.79.8.133:5000/jadwalKegiatan
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InRlcmFwaXMiLCJpYXQiOjE3NDg3MTMyMDMsImV4cCI6MTc0ODcxNjgwM30.TtAtFDKE--A5N1TGRS1Jjts7H7Mdx7nmt6ECcuhCa5E
 
@@ -111,7 +110,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
 }
 
 ###
-PATCH http://localhost:5000/jadwalKegiatan/1
+PATCH http://145.79.8.133:5000/jadwalKegiatan/1
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ1NTgwMDUxLCJleHAiOjE3NDU1ODM2NTF9.F4m6TTIC8k92kvb8tmCIf0KZLWwFm27QSsUX479Y_1c
 
@@ -123,20 +122,20 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
 }
 
 ###
-DELETE http://localhost:5000/jadwalKegiatan/1
+DELETE http://145.79.8.133:5000/jadwalKegiatan/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0NTU2MzY5NywiZXhwIjoxNzQ1NTY3Mjk3fQ.WsWWVUJtnx9DVDGeJmM3H9ib0Z0w_PnrPjlyqjpoFQw
 
 
 //TERAPIS KAMI
 ###
-GET http://localhost:5000/terapis
+GET http://145.79.8.133:5000/terapis
 Authorization: Bearer yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ1ODI3Mzk4LCJleHAiOjE3NDU4MzA5OTh9.ruPa4MuO4sNGg5YhYiim9_-lillb_W6hwg77sh1BqBw
 
 ###
-GET http://localhost:5000/terapis/1
+GET http://145.79.8.133:5000/terapis/1
 
 ###
-POST http://localhost:5000/terapis
+POST http://145.79.8.133:5000/terapis
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ3NDAxNjkxLCJleHAiOjE3NDc0MDUyOTF9.xHfhxkibBbGzyHkV4XZ2aBy6Yuf8Z86gM_LN72X4Eks
 
@@ -148,7 +147,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
         }
 
 ###
-PATCH http://localhost:5000/terapis/2
+PATCH http://145.79.8.133:5000/terapis/2
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ3NDAxNjkxLCJleHAiOjE3NDc0MDUyOTF9.xHfhxkibBbGzyHkV4XZ2aBy6Yuf8Z86gM_LN72X4Eks
 
@@ -162,19 +161,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
         }
 
 ###
-DELETE http://localhost:5000/terapis/1
+DELETE http://145.79.8.133:5000/terapis/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0NTU2MzY5NywiZXhwIjoxNzQ1NTY3Mjk3fQ.WsWWVUJtnx9DVDGeJmM3H9ib0Z0w_PnrPjlyqjpoFQw
 
 
 //DOKUMENTASI
 ###
-GET http://localhost:5000/dokumentasi
+GET http://145.79.8.133:5000/dokumentasi
 
 ###
-GET http://localhost:5000/dokumentasi/1
+GET http://145.79.8.133:5000/dokumentasi/1
 
 ###
-POST http://localhost:5000/dokumentasi
+POST http://145.79.8.133:5000/dokumentasi
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ1NTgwMDUxLCJleHAiOjE3NDU1ODM2NTF9.F4m6TTIC8k92kvb8tmCIf0KZLWwFm27QSsUX479Y_1c
 
@@ -184,7 +183,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
         }
 
 ###
-PATCH http://localhost:5000/dokumentasi/1
+PATCH http://145.79.8.133:5000/dokumentasi/1
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ1NTgwMDUxLCJleHAiOjE3NDU1ODM2NTF9.F4m6TTIC8k92kvb8tmCIf0KZLWwFm27QSsUX479Y_1c
 
@@ -194,18 +193,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
         }
 
 ###
-DELETE http://localhost:5000/dokumentasi/1
+DELETE http://145.79.8.133:5000/dokumentasi/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0NTU2MzY5NywiZXhwIjoxNzQ1NTY3Mjk3fQ.WsWWVUJtnx9DVDGeJmM3H9ib0Z0w_PnrPjlyqjpoFQw
 
 //TESTIMONI
 ###
-GET http://localhost:5000/testimoni
+GET http://145.79.8.133:5000/testimoni
 
 ###
-GET http://localhost:5000/testimoni/1
+GET http://145.79.8.133:5000/testimoni/1
 
 ###
-POST http://localhost:5000/testimoni
+POST http://145.79.8.133:5000/testimoni
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ3NDE1NjM4LCJleHAiOjE3NDc0MTkyMzh9.9SHLkH04VruqjAQsl2MgKWGxn1LqQ-ToRHJ6qOpMamE
 
@@ -214,7 +213,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
         }
 
 ###
-PATCH http://localhost:5000/testimoni/1
+PATCH http://145.79.8.133:5000/testimoni/1
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ3NDE1NjM4LCJleHAiOjE3NDc0MTkyMzh9.9SHLkH04VruqjAQsl2MgKWGxn1LqQ-ToRHJ6qOpMamE
 
@@ -223,19 +222,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
         }
 
 ###
-DELETE http://localhost:5000/testimoni/1
+DELETE http://145.79.8.133:5000/testimoni/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0NTU2MzY5NywiZXhwIjoxNzQ1NTY3Mjk3fQ.WsWWVUJtnx9DVDGeJmM3H9ib0Z0w_PnrPjlyqjpoFQw
 
 
 //PERTANYAAN
 ###
-GET http://localhost:5000/pertanyaan
+GET http://145.79.8.133:5000/pertanyaan
 
 ###
-GET http://localhost:5000/pertanyaan/1
+GET http://145.79.8.133:5000/pertanyaan/1
 
 ###
-POST http://localhost:5000/pertanyaan
+POST http://145.79.8.133:5000/pertanyaan
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InRlcmFwaXMiLCJpYXQiOjE3NDg3MTMyMDMsImV4cCI6MTc0ODcxNjgwM30.TtAtFDKE--A5N1TGRS1Jjts7H7Mdx7nmt6ECcuhCa5E
 
@@ -245,7 +244,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
         }
 
 ###
-PATCH http://localhost:5000/pertanyaan/1
+PATCH http://145.79.8.133:5000/pertanyaan/1
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ2OTc5ODk4LCJleHAiOjE3NDY5ODM0OTh9.ygNuz2Efz0JMwlF8ClwJArTPRhGjn_ZMfbBUH6euNQI
 
@@ -255,20 +254,20 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
         }
 
 ###
-DELETE http://localhost:5000/pertanyaan/2
+DELETE http://145.79.8.133:5000/pertanyaan/2
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0NTU2MzY5NywiZXhwIjoxNzQ1NTY3Mjk3fQ.WsWWVUJtnx9DVDGeJmM3H9ib0Z0w_PnrPjlyqjpoFQw
 
 
 //TINJAUAN
 ###
-GET http://localhost:5000/tinjauan
+GET http://145.79.8.133:5000/tinjauan
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ2OTUwNjAwLCJleHAiOjE3NDY5NTQyMDB9.RpU9neLytPkfX-L19uumsM69QsyneIUyuI2Jbx04dmQ
 
 ###
-GET http://localhost:5000/tinjauan/1
+GET http://145.79.8.133:5000/tinjauan/1
 
 ###
-POST http://localhost:5000/tinjauan
+POST http://145.79.8.133:5000/tinjauan
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ1NTgzNTkxLCJleHAiOjE3NDU1ODcxOTF9.hwJKCpb9LhnmNsr0Xry-RSRhyi-d5PsTfHaPw0E-Rkk
 
@@ -280,7 +279,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
 }
 
 ###
-PATCH http://localhost:5000/tinjauan/1
+PATCH http://145.79.8.133:5000/tinjauan/1
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ1NTgwMDUxLCJleHAiOjE3NDU1ODM2NTF9.F4m6TTIC8k92kvb8tmCIf0KZLWwFm27QSsUX479Y_1c
 
@@ -292,19 +291,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
 }
 
 ###
-DELETE http://localhost:5000/tinjauan/2
+DELETE http://145.79.8.133:5000/tinjauan/2
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0NTU2MzY5NywiZXhwIjoxNzQ1NTY3Mjk3fQ.WsWWVUJtnx9DVDGeJmM3H9ib0Z0w_PnrPjlyqjpoFQw
 
 
 //PERTANYAAN
 ###
-GET http://localhost:5000/pertanyaan
+GET http://145.79.8.133:5000/pertanyaan
 
 ###
-GET http://localhost:5000/pertanyaan/1
+GET http://145.79.8.133:5000/pertanyaan/1
 
 ###
-POST http://localhost:5000/pertanyaan
+POST http://145.79.8.133:5000/pertanyaan
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ1NTgwMDUxLCJleHAiOjE3NDU1ODM2NTF9.F4m6TTIC8k92kvb8tmCIf0KZLWwFm27QSsUX479Y_1c
 
@@ -314,7 +313,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
         }
 
 ###
-PATCH http://localhost:5000/pertanyaan/1
+PATCH http://145.79.8.133:5000/pertanyaan/1
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ1NTgwMDUxLCJleHAiOjE3NDU1ODM2NTF9.F4m6TTIC8k92kvb8tmCIf0KZLWwFm27QSsUX479Y_1c
 
@@ -324,21 +323,21 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
         }
 
 ###
-DELETE http://localhost:5000/pertanyaan/2
+DELETE http://145.79.8.133:5000/pertanyaan/2
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0NTU2MzY5NywiZXhwIjoxNzQ1NTY3Mjk3fQ.WsWWVUJtnx9DVDGeJmM3H9ib0Z0w_PnrPjlyqjpoFQw
 
 
 //RESERVASI
 ###
-GET http://localhost:5000/reservasi
+GET http://145.79.8.133:5000/reservasi
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InRlcmFwaXMiLCJpYXQiOjE3NDg5MzM0MTgsImV4cCI6MTc0ODkzNzAxOH0.B13f1Ns6FH0Pz6OrkvqJ3EIfTQHiCuSHlf66ZVHqxcI
 
 ###
-GET http://localhost:5000/reservasi/1
+GET http://145.79.8.133:5000/reservasi/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InRlcmFwaXMiLCJpYXQiOjE3NDg3MTY4NTIsImV4cCI6MTc0ODcyMDQ1Mn0.KEtZuMVrv4Qclvs-yGM-f32MnTKAGxbfNR_3Briz6Uc
 
 ###
-POST http://localhost:5000/reservasi
+POST http://145.79.8.133:5000/reservasi
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ4NDkzNzU5LCJleHAiOjE3NDg0OTczNTl9.JDdkhfO2VkC1LeHayoR-Ggn67t73GP_qFGWDzPANr1I
 
@@ -358,7 +357,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
 }
 
 ###
-PATCH http://localhost:5000/reservasi/47
+PATCH http://145.79.8.133:5000/reservasi/47
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ4NDkzNzU5LCJleHAiOjE3NDg0OTczNTl9.JDdkhfO2VkC1LeHayoR-Ggn67t73GP_qFGWDzPANr1I
 
@@ -378,25 +377,25 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
 }
 
 ###
-DELETE http://localhost:5000/reservasi/9
+DELETE http://145.79.8.133:5000/reservasi/9
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ3NDE0OTE0LCJleHAiOjE3NDc0MTg1MTR9.98W6aVgkozPA0CJ8ndLtrtVp-YDFLZ_b-J_WO262RRk
 
 
 //JADWAL TERAPIS
 ###
-GET http://localhost:5000/jadwalTerapis
+GET http://145.79.8.133:5000/jadwalTerapis
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InRlcmFwaXMiLCJpYXQiOjE3NDkyNjI4MDQsImV4cCI6MTc0OTI2NjQwNH0.5caTYYSYOX5yLOYuA1zpRahzUiO_IrcSZ5Ljb7pzOFI
 
 ###
-GET http://localhost:5000/jadwalTerapis/1
+GET http://145.79.8.133:5000/jadwalTerapis/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6Im93bmVyIiwiaWF0IjoxNzQ5MjI5MDQ3LCJleHAiOjE3NDkyMzI2NDd9.n0RzxTIWGKC4EJ3Zt540BDEyTvnR72YBdpm-eEO6zYI
 
 ###
-GET http://localhost:5000/jadwalTerapis/16/users/2
+GET http://145.79.8.133:5000/jadwalTerapis/16/users/2
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InRlcmFwaXMiLCJpYXQiOjE3NDkyNjI4MDQsImV4cCI6MTc0OTI2NjQwNH0.5caTYYSYOX5yLOYuA1zpRahzUiO_IrcSZ5Ljb7pzOFI
 
 ###
-POST http://localhost:5000/jadwalTerapis
+POST http://145.79.8.133:5000/jadwalTerapis
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InRlcmFwaXMiLCJpYXQiOjE3NDkxMTQ2MDcsImV4cCI6MTc0OTExODIwN30.ONLUgZaYPbDNA4oYz_eX78ANFVwoOFzz5GHXa04MP7E
 
@@ -407,7 +406,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
 }
 
 ###
-PATCH http://localhost:5000/jadwalTerapis/1
+PATCH http://145.79.8.133:5000/jadwalTerapis/1
 Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6Im93bmVyIiwiaWF0IjoxNzQ5MjIxNjAwLCJleHAiOjE3NDkyMjUyMDB9.ADYh96vIvFYMk5kT3cdNxVGzcOAFbiysZzmF3TCZJI4
 
@@ -420,7 +419,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6I
 }
 
 ###
-DELETE http://localhost:5000/jadwalTerapis/1
+DELETE http://145.79.8.133:5000/jadwalTerapis/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ4NDkzNzU5LCJleHAiOjE3NDg0OTczNTl9.JDdkhfO2VkC1LeHayoR-Ggn67t73GP_qFGWDzPANr1I
 
 

@@ -1,19 +1,23 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 
-// Helper function to create directory if it doesn't exist
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const createDirectory = (dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
 };
 
-// Configuration for Testimoni uploads
+
+// Testimoni
 const storageTestimoni = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = path.join(process.cwd(), 'uploads/testimoni/');
-    createDirectory(dir); // Ensure the directory exists
+    const dir = path.join(__dirname, 'uploads/testimoni/');
+    createDirectory(dir);
     cb(null, dir);
   },
   filename: (req, file, cb) => {
@@ -22,11 +26,11 @@ const storageTestimoni = multer.diskStorage({
   },
 });
 
-// Configuration for Reservasi uploads
+// Reservasi
 const storageReservasi = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = path.join(process.cwd(), 'uploads/reservasi/');
-    createDirectory(dir); // Ensure the directory exists
+    const dir = path.join(__dirname, 'uploads/reservasi/');
+    createDirectory(dir);
     cb(null, dir);
   },
   filename: (req, file, cb) => {
@@ -35,11 +39,11 @@ const storageReservasi = multer.diskStorage({
   },
 });
 
-// Configuration for Users Gambar uploads (Image files)
+// Users - Gambar
 const storageUsersGambar = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = path.join(process.cwd(), 'uploads/users/gambar/');
-    createDirectory(dir); // Ensure the directory exists
+    const dir = path.join(__dirname, 'uploads/users/gambar/');
+    createDirectory(dir);
     cb(null, dir);
   },
   filename: (req, file, cb) => {
@@ -48,11 +52,11 @@ const storageUsersGambar = multer.diskStorage({
   },
 });
 
-// Configuration for Users CV PDF uploads (PDF files)
+// Users - CV PDF
 const storageUsersCV = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = path.join(process.cwd(), 'uploads/users/cv/');
-    createDirectory(dir); // Ensure the directory exists
+    const dir = path.join(__dirname, 'uploads/users/cv/');
+    createDirectory(dir);
     cb(null, dir);
   },
   filename: (req, file, cb) => {
@@ -61,46 +65,50 @@ const storageUsersCV = multer.diskStorage({
   },
 });
 
-// Use memory storage for multer and validate files before uploading
+// Dokumentasi
+const storageDokumentasi = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(__dirname, 'uploads/dokumentasi_topung/');
+    createDirectory(dir);
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
+  },
+});
+
+
+// Upload Users (gambar + cv)
 const uploadUsers = multer({
   storage: multer.memoryStorage(),
   fileFilter: (req, file, cb) => {
     if (file.fieldname === 'gambar') {
-      // Check if the file is an image (starts with 'image/')
       const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
       if (!allowedImageTypes.includes(file.mimetype)) {
         return cb(new Error(`File gambar harus berupa gambar (jpg, png, jpeg, webp). Diterima: ${file.mimetype}`), false);
       }
     }
 
-    // Check if the file is a PDF for 'cv_pdf'
     if (file.fieldname === 'cv_pdf' && file.mimetype !== 'application/pdf') {
       return cb(new Error(`File CV harus berupa PDF. Diterima: ${file.mimetype}`), false);
     }
 
-    // Allow the file upload
     cb(null, true);
   },
-  limits: {
-    fileSize: 5 * 1024 * 1024, 
-  },
+  limits: { fileSize: 5 * 1024 * 1024 },
 }).fields([
   { name: 'gambar', maxCount: 1 },
   { name: 'cv_pdf', maxCount: 1 },
 ]);
 
+// Upload Testimoni
 const uploadTestimoni = multer({ 
   storage: storageTestimoni,
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
-      'image/jpeg', 
-      'image/png', 
-      'image/jpg', 
-      'image/webp', 
-      'video/mp4', 
-      'video/avi', 
-      'video/quicktime', 
-      'video/webm' 
+      'image/jpeg', 'image/png', 'image/jpg', 'image/webp',
+      'video/mp4', 'video/avi', 'video/quicktime', 'video/webm'
     ];
     if (!allowedTypes.includes(file.mimetype)) {
       return cb(new Error(`File harus berupa gambar (JPEG, PNG, JPG, WebP) atau video (MP4, AVI, MOV, WebM)!`), false);
@@ -110,31 +118,13 @@ const uploadTestimoni = multer({
   limits: { fileSize: 5 * 1024 * 1024 } 
 });
 
-// Configuration for Dokumentasi uploads
-const storageDokumentasi = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = path.join(process.cwd(), 'uploads/dokumentasi_topung/');
-    createDirectory(dir); // Ensure the directory exists
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
-  },
-});
-
+// Upload Dokumentasi
 const uploadDokumentasi = multer({ 
   storage: storageDokumentasi,
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
-      'image/jpeg', 
-      'image/png', 
-      'image/jpg', 
-      'image/webp', 
-      'video/mp4', 
-      'video/avi', 
-      'video/quicktime', 
-      'video/webm' 
+      'image/jpeg', 'image/png', 'image/jpg', 'image/webp',
+      'video/mp4', 'video/avi', 'video/quicktime', 'video/webm'
     ];
     if (!allowedTypes.includes(file.mimetype)) {
       return cb(new Error(`File harus berupa gambar (JPEG, PNG, JPG, WebP) atau video (MP4, AVI, MOV, WebM)!`), false);
@@ -144,22 +134,7 @@ const uploadDokumentasi = multer({
   limits: { fileSize: 5 * 1024 * 1024 } 
 });
 
-// Middleware untuk menangani kesalahan multer (opsional, tambahkan di rute)
-export const handleMulterError = (err, req, res, next) => {
-  if (err instanceof multer.MulterError) {
-    // Check if the error is due to file size limit
-    if (err.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ msg: `File terlalu besar. Batas maksimum adalah 5 MB.` });
-    }
-    // Handle other Multer errors
-    return res.status(400).json({ msg: err.message });
-  } else if (err) {
-    // Handle other types of errors
-    return res.status(400).json({ msg: err.message });
-  }
-  next();
-};
-
+// Upload Reservasi
 const uploadReservasi = multer({ 
   storage: storageReservasi,
   fileFilter: (req, file, cb) => {
@@ -169,10 +144,19 @@ const uploadReservasi = multer({
     }
     cb(null, true);
   },
-  limits: {
-    fileSize: 5 * 1024 * 1024, // Limit file size to 5MB
-  },
+  limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-// Export the multer configuration for other files
+export const handleMulterError = (err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ msg: `File terlalu besar. Batas maksimum adalah 5 MB.` });
+    }
+    return res.status(400).json({ msg: err.message });
+  } else if (err) {
+    return res.status(400).json({ msg: err.message });
+  }
+  next();
+};
+
 export { uploadTestimoni, uploadDokumentasi, uploadReservasi, uploadUsers };
