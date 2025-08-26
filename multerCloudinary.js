@@ -96,7 +96,7 @@ const uploadUsers = multer({
 
     cb(null, true);
   },
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 50 * 1024 * 1024 } 
 }).fields([
   { name: 'gambar', maxCount: 1 },
   { name: 'cv_pdf', maxCount: 1 },
@@ -115,7 +115,7 @@ const uploadTestimoni = multer({
     }
     cb(null, true);
   },
-  limits: { fileSize: 5 * 1024 * 1024 } 
+  limits: { fileSize: 50 * 1024 * 1024 } 
 });
 
 // Upload Dokumentasi
@@ -131,7 +131,7 @@ const uploadDokumentasi = multer({
     }
     cb(null, true);
   },
-  limits: { fileSize: 5 * 1024 * 1024 } 
+  limits: { fileSize: 50 * 1024 * 1024 } 
 });
 
 // Upload Reservasi
@@ -144,7 +144,7 @@ const uploadReservasi = multer({
     }
     cb(null, true);
   },
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 50 * 1024 * 1024 } 
 });
 
 export const handleMulterError = (err, req, res, next) => {
