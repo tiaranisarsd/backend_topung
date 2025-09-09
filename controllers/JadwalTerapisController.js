@@ -99,26 +99,36 @@ export const updateJadwalByUserAndId = async (req, res) => {
 
 
 export const createJadwalTerapis = async (req, res) => {
-  const {hari, jam } = req.body;
-  const userId = req.user.id;
+  const { userId, hari, jam } = req.body;
 
   try {
+    let targetUserId;
+
+    if (req.user.role === "owner") {
+      if (!userId) {
+        return res.status(400).json({ msg: "userId harus disediakan untuk membuat jadwal terapis" });
+      }
+      targetUserId = userId;
+    } else {
+      targetUserId = req.user.id;
+    }
+
     await prisma.jadwal_terapis.create({
       data: {
-        hari: hari,
-        jam: jam,
+        hari,
+        jam,
         user: {
-            connect: {
-              id: userId,
-            },
-          },
+          connect: { id: targetUserId },
+        },
       },
     });
+
     res.status(201).json({ msg: "JadwalTerapis Created Successfully" });
   } catch (error) {
     res.status(400).json({ msg: error.message });
   }
 };
+
 
 export const updateJadwalTerapis = async (req, res) => {
     const response = await prisma.jadwal_terapis.findUnique({
