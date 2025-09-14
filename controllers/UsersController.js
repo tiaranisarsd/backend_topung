@@ -87,7 +87,7 @@ export const createUsers = async (req, res) => {
       if (!fs.existsSync(uploadPathDir)) {
         fs.mkdirSync(uploadPathDir, { recursive: true });
       }
-      cv_pdf = `/uploads/cv/${Date.now()}_${file.originalname}`; // Simpan path relatif untuk database
+      cv_pdf = path.join('cv', `${Date.now()}_${file.originalname}`); // Simpan path relatif untuk database
       const fullPath = path.join(uploadPathDir, `${Date.now()}_${file.originalname}`);
       fs.writeFileSync(fullPath, file.buffer);
       console.log(`New CV PDF uploaded successfully: ${fullPath}`);
